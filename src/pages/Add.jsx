@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { assets } from '../assets/assets'
 import axios from 'axios';
 import { backendURL } from '../App';
@@ -17,11 +17,146 @@ const Add = ({token}) => {
   const [Mrpprice, setMrpprice] = useState('');
  const [category, setCategory] = useState('Men');
  const [subCategory, setSubCategory] = useState('Topwear');
- const [collegeMerchandise, setCollegeMerchandise] = useState('IIMB MERCHANDISE STORE');
+ const [collegeMerchandise, setCollegeMerchandise] = useState('');
+ const [merchandiseList, setMerchandiseList] = useState([]);
+ const [newMerchandise, setNewMerchandise] = useState('');
+ const [showAddMerchandise, setShowAddMerchandise] = useState(false);
 
 
  const [bestseller, setBestseller] = useState(false);
  const [sizes,setSizes]=useState([]);
+
+ // Define subcategories for each category
+ const subCategoryOptions = {
+   'Men': ['Topwear', 'Bottomwear', 'Winterwear'],
+   'Women': ['Topwear', 'Bottomwear', 'Winterwear'],
+   'Kids': ['Topwear', 'Bottomwear', 'Winterwear'],
+   'Accessories': [
+     'Bags & Backpacks',
+     'Tote Bags / Sling Bags',
+     'Caps & Bandanas',
+     'Lanyards & ID Card Holders',
+     'Badges & Pins',
+     'Keychains'
+   ],
+   'Stationery & Academic Supplies': [
+     'Notebooks / Journals',
+     'Pens / Pencils / Highlighters',
+     'Folders / Files',
+     'Sticky Notes / Planners',
+     'Desk Organizers',
+     'Calendars',
+     'Bookmarks'
+   ],
+   'Lifestyle & Utility Items': [
+     'Mugs / Sippers / Tumblers',
+     'Water Bottles / Flasks',
+     'Umbrellas'
+   ],
+   'Tech & Gadgets': [
+     'Pendrives / Hard Drives (custom branded)',
+     'Mousepads',
+     'Phone Covers / Pop Sockets',
+     'Laptop Sleeves / Skins',
+     'Earphones / Bluetooth Speakers'
+   ],
+   'Event & Souvenir Merchandise': [
+     'Custom T-shirts / Hoodies for Events',
+     'Medals / Trophies / Plaques',
+     'Certificates / Frames',
+     'Photo Frames / Collages',
+     'Commemorative Coins or Pins',
+     'Batch / Alumni Gift Sets'
+   ],
+   'Eco-Friendly & Sustainable Merchandise': [
+     'Jute / Canvas Bags',
+     'Bamboo / Wooden Stationery',
+     'Plantable Notebooks / Seed Pens',
+     'Recycled Paper Products',
+     'Steel / Glass Bottles',
+     'Eco Gift Kits'
+   ],
+   'Gift Sets & Combos': [
+     'Welcome Kits (T-shirt, Notebook, Mug, ID Holder)',
+     'Corporate / Alumni Gift Sets',
+     'Fest Merchandise Boxes',
+     'Achievement / Graduation Boxes'
+   ],
+   'Sports & Fitness Merchandise': [
+     'Sports Kits / Jerseys',
+     'Gym Towels / Bottles',
+     'Yoga Mats',
+     'Fitness Bands',
+     'Sports Bags',
+     'Arm Bands / Headbands'
+   ],
+   'Home & Dorm Essentials': [
+     'Bedsheets / Pillow Covers',
+     'Dorm Room Decor',
+     'Wall Clocks / Lamps',
+     'Storage Bins',
+     'Laundry Bags'
+   ]
+ };
+
+ // Handle category change
+ const handleCategoryChange = (newCategory) => {
+   setCategory(newCategory);
+   // Set first subcategory of the new category
+   const newSubCategories = subCategoryOptions[newCategory] || [];
+   setSubCategory(newSubCategories[0] || '');
+   // Clear sizes if non-clothing category
+   if (newCategory === 'Accessories' || newCategory === 'Stationery & Academic Supplies' || newCategory === 'Lifestyle & Utility Items' || newCategory === 'Tech & Gadgets' || newCategory === 'Event & Souvenir Merchandise' || newCategory === 'Eco-Friendly & Sustainable Merchandise' || newCategory === 'Gift Sets & Combos' || newCategory === 'Sports & Fitness Merchandise' || newCategory === 'Home & Dorm Essentials') {
+     setSizes([]);
+   }
+ };
+
+ // Fetch merchandise list on component mount
+ useEffect(() => {
+   fetchMerchandiseList();
+ }, []);
+
+ const fetchMerchandiseList = async () => {
+   try {
+     const response = await axios.get(backendURL + '/api/college-merchandise/list');
+     if (response.data.success) {
+       setMerchandiseList(response.data.merchandises);
+       if (response.data.merchandises.length > 0) {
+         setCollegeMerchandise(response.data.merchandises[0].name);
+       }
+     }
+   } catch (err) {
+     console.log(err);
+     toast.error('Failed to fetch merchandise list');
+   }
+ };
+
+ const handleAddMerchandise = async () => {
+   if (!newMerchandise.trim()) {
+     toast.error('Please enter a merchandise name');
+     return;
+   }
+
+   try {
+     const response = await axios.post(
+       backendURL + '/api/college-merchandise/add',
+       { name: newMerchandise },
+       { headers: { token } }
+     );
+
+     if (response.data.success) {
+       toast.success(response.data.message);
+       setNewMerchandise('');
+       setShowAddMerchandise(false);
+       fetchMerchandiseList();
+     } else {
+       toast.error(response.data.message);
+     }
+   } catch (err) {
+     console.log(err);
+     toast.error(err.response?.data?.message || 'Failed to add merchandise');
+   }
+ };
 
  const onSubmitHandler = async(e) => {
     e.preventDefault();
@@ -112,30 +247,91 @@ const Add = ({token}) => {
            <div>
 
             <p className='mb-2'>Product category</p>
-            <select onChange={(e)=>setCategory(e.target.value)} className="w-full px-3 py-2" name="category" id="">
+            <select onChange={(e)=>handleCategoryChange(e.target.value)} value={category} className="w-full px-3 py-2" name="category" id="">
               <option value="Men">Men</option>
               <option value="Women">Women</option>
               <option value="Kids">Kids</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Stationery & Academic Supplies">Stationery & Academic Supplies</option>
+              <option value="Lifestyle & Utility Items">Lifestyle & Utility Items</option>
+              <option value="Tech & Gadgets">Tech & Gadgets</option>
+              <option value="Event & Souvenir Merchandise">Event & Souvenir Merchandise</option>
+              <option value="Eco-Friendly & Sustainable Merchandise">Eco-Friendly & Sustainable Merchandise</option>
+              <option value="Gift Sets & Combos">Gift Sets & Combos</option>
+              <option value="Sports & Fitness Merchandise">Sports & Fitness Merchandise</option>
+              <option value="Home & Dorm Essentials">Home & Dorm Essentials</option>
             </select>
            </div>
            <div>
 
             <p className='mb-2'>Sub category</p>
-            <select onChange={(e)=>setSubCategory(e.target.value)} className="w-full px-3 py-2" name="category" id="">
-              <option value="Topwear">Topwear</option>
-              <option value="Bottomwear">Bottomwear</option>
-              <option value="Winterwear">Winterwear</option>
+            <select onChange={(e)=>setSubCategory(e.target.value)} value={subCategory} className="w-full px-3 py-2" name="subCategory" id="">
+              {(subCategoryOptions[category] || []).map((sub) => (
+                <option key={sub} value={sub}>{sub}</option>
+              ))}
             </select>
            </div>
            <div>
 
             <p className='mb-2'>College Merchandise</p>
-            <select onChange={(e)=>setCollegeMerchandise(e.target.value)} className="w-full px-3 py-2" name="category" id="">
-              <option value="IIMB MERCHANDISE STORE">IIMB MERCHANDISE STORE</option>
-              <option value="BBA(DBE)">BBA(DBE)</option>
-              <option value="IIM Udaipur">IIM Udaipur</option>
-              <option value="None">None</option>
-            </select>
+            <div className='flex gap-2 items-end'>
+              <div className='flex-1'>
+                <select 
+                  onChange={(e) => {
+                    if (e.target.value === '__add_new__') {
+                      setShowAddMerchandise(true);
+                    } else {
+                      setCollegeMerchandise(e.target.value);
+                    }
+                  }} 
+                  value={collegeMerchandise}
+                  className="w-full px-3 py-2" 
+                  name="collegeMerchandise"
+                >
+                  <option value="">Select College Merchandise</option>
+                  {merchandiseList.map((item) => (
+                    <option key={item._id} value={item.name}>
+                      {item.name}
+                    </option>
+                  ))}
+                  <option value="__add_new__" style={{color: '#4CAF50', fontWeight: 'bold'}}>
+                    + Add New Merchandise
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            {showAddMerchandise && (
+              <div className='mt-2 p-3 border rounded bg-gray-50'>
+                <p className='text-sm font-medium mb-2'>Add New Merchandise</p>
+                <div className='flex gap-2'>
+                  <input
+                    type='text'
+                    value={newMerchandise}
+                    onChange={(e) => setNewMerchandise(e.target.value)}
+                    placeholder='Enter merchandise name'
+                    className='flex-1 px-3 py-2 border rounded'
+                  />
+                  <button
+                    type='button'
+                    onClick={handleAddMerchandise}
+                    className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600'
+                  >
+                    Add
+                  </button>
+                  <button
+                    type='button'
+                    onClick={() => {
+                      setShowAddMerchandise(false);
+                      setNewMerchandise('');
+                    }}
+                    className='px-4 py-2 bg-gray-400 text-white rounded hover:bg-gray-500'
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
            </div>
 
 
@@ -146,13 +342,14 @@ const Add = ({token}) => {
            </div>
 
  <div>
-           <p className='mb-2 '>Product MRP price</p>
+           <p className='mb-2 '>MRP price</p>
               <input onChange={(e)=>setMrpprice(e.target.value)} className='w-full px-3 py-2 sm:w-[120px]' type="Number" placeholder='25' />
               </div>
          </div>
 
 
 
+ {category !== 'Accessories' && category !== 'Stationery & Academic Supplies' && category !== 'Lifestyle & Utility Items' && category !== 'Tech & Gadgets' && category !== 'Event & Souvenir Merchandise' && category !== 'Eco-Friendly & Sustainable Merchandise' && category !== 'Gift Sets & Combos' && category !== 'Sports & Fitness Merchandise' && category !== 'Home & Dorm Essentials' && (
  <div>
   <p className='mb-2'>Product Sizes</p>
   <div className='flex gap-3'>
@@ -173,6 +370,7 @@ const Add = ({token}) => {
     </div>
   </div>
  </div>
+ )}
 
 
  <div className='flex gap-2 mt-2 '>
