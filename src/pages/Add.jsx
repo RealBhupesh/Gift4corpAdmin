@@ -22,6 +22,7 @@ const Add = ({token}) => {
  const [newMerchandise, setNewMerchandise] = useState('');
  const [showAddMerchandise, setShowAddMerchandise] = useState(false);
  const [quantity, setQuantity] = useState(0);
+ const [color, setColor] = useState('');
 
 
  const [bestseller, setBestseller] = useState(false);
@@ -176,6 +177,7 @@ const Add = ({token}) => {
       formData.append('sizes', JSON.stringify(sizes));
       formData.append('collegeMerchandise', collegeMerchandise);
       formData.append('quantity', quantity);
+      formData.append('color', color);
 
          
       console.log([...formData]);
@@ -190,6 +192,7 @@ const Add = ({token}) => {
         setPrice('');     
         setMrpprice('');
         setQuantity(0);
+        setColor('');
         setSizes([]);
         setBestseller(false);
         setImage1('');  
@@ -353,6 +356,11 @@ const Add = ({token}) => {
            <div>
              <p className='mb-2 '>Quantity</p>
              <input onChange={(e)=>setQuantity(e.target.value)} value={quantity} className='w-full px-3 py-2 sm:w-[120px]' type="Number" placeholder='0' min='0' />
+           </div>
+
+           <div>
+             <p className='mb-2 '>Color</p>
+             <input onChange={(e)=>setColor(e.target.value)} value={color} className='w-full px-3 py-2 sm:w-[120px]' type="text" placeholder='Red' />
            </div>
          </div>
 

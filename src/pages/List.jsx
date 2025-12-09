@@ -18,7 +18,8 @@ const List = ({token}) => {
    bestseller: false,
    collegeMerchandise: '',
    sizes: [],
-   quantity: 0
+   quantity: 0,
+   color: ''
  });
  const [images, setImages] = useState([null, null, null, null]);
 
@@ -69,7 +70,8 @@ const openEditDialog = (product) => {
     bestseller: product.bestseller,
     collegeMerchandise: product.collegeMerchandise || '',
     sizes: product.sizes || [],
-    quantity: product.quantity || 0
+    quantity: product.quantity || 0,
+    color: product.color || ''
   });
   setImages([null, null, null, null]);
   setShowEditDialog(true);
@@ -88,7 +90,8 @@ const closeEditDialog = () => {
     bestseller: false,
     collegeMerchandise: '',
     sizes: [],
-    quantity: 0
+    quantity: 0,
+    color: ''
   });
   setImages([null, null, null, null]);
 }
@@ -134,6 +137,7 @@ const handleUpdateProduct = async (e) => {
     formDataToSend.append('bestseller', formData.bestseller);
     formDataToSend.append('collegeMerchandise', formData.collegeMerchandise);
     formDataToSend.append('quantity', formData.quantity);
+    formDataToSend.append('color', formData.color);
     
     if (formData.sizes.length > 0) {
       formDataToSend.append('sizes', JSON.stringify(formData.sizes));
@@ -287,9 +291,9 @@ const handleUpdateProduct = async (e) => {
                       onChange={handleInputChange}
                       className='w-full px-3 py-2 border rounded'
                     >
-                      <option value='Topwear'>Topwear</option>
-                      <option value='Bottomwear'>Bottomwear</option>
-                      <option value='Winterwear'>Winterwear</option>
+                      <option value='Men'>Men</option>
+                      <option value='Women'>Women</option>
+                      <option value='Kids'>Kids</option>
                     </select>
                   </div>
                 </div>
@@ -322,17 +326,31 @@ const handleUpdateProduct = async (e) => {
                 </div>
 
                 {/* Quantity */}
-                <div>
-                  <label className='block mb-2 font-medium'>Quantity</label>
-                  <input
-                    type='number'
-                    name='quantity'
-                    value={formData.quantity}
-                    onChange={handleInputChange}
-                    min='0'
-                    className='w-full px-3 py-2 border rounded'
-                    required
-                  />
+                <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                  <div>
+                    <label className='block mb-2 font-medium'>Quantity</label>
+                    <input
+                      type='number'
+                      name='quantity'
+                      value={formData.quantity}
+                      onChange={handleInputChange}
+                      min='0'
+                      className='w-full px-3 py-2 border rounded'
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className='block mb-2 font-medium'>Color</label>
+                    <input
+                      type='text'
+                      name='color'
+                      value={formData.color}
+                      onChange={handleInputChange}
+                      placeholder='e.g., Red, Blue'
+                      className='w-full px-3 py-2 border rounded'
+                    />
+                  </div>
                 </div>
 
                 {/* College Merchandise */}
