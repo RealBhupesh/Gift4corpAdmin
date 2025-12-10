@@ -273,13 +273,11 @@ const handleUpdateProduct = async (e) => {
                       <option value='Apparels'>Apparels</option>
                       <option value='Accessories'>Accessories</option>
                       <option value='Stationery & Academic Supplies'>Stationery & Academic Supplies</option>
-                      <option value='Lifestyle & Utility Items'>Lifestyle & Utility Items</option>
                       <option value='Tech & Gadgets'>Tech & Gadgets</option>
                       <option value='Event & Souvenir Merchandise'>Event & Souvenir Merchandise</option>
                       <option value='Eco-Friendly & Sustainable Merchandise'>Eco-Friendly & Sustainable Merchandise</option>
                       <option value='Gift Sets & Combos'>Gift Sets & Combos</option>
                       <option value='Sports & Fitness Merchandise'>Sports & Fitness Merchandise</option>
-                      <option value='Home & Dorm Essentials'>Home & Dorm Essentials</option>
                     </select>
                   </div>
 

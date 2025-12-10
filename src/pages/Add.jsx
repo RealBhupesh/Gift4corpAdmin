@@ -23,6 +23,10 @@ const Add = ({token}) => {
  const [showAddMerchandise, setShowAddMerchandise] = useState(false);
  const [quantity, setQuantity] = useState(0);
  const [color, setColor] = useState('');
+ const [weight, setWeight] = useState(400);
+ const [length, setLength] = useState(30);
+ const [breadth, setBreadth] = useState(27);
+ const [height, setHeight] = useState(2);
 
 
  const [bestseller, setBestseller] = useState(false);
@@ -47,11 +51,6 @@ const Add = ({token}) => {
      'Desk Organizers',
      'Calendars',
      'Bookmarks'
-   ],
-   'Lifestyle & Utility Items': [
-     'Mugs / Sippers / Tumblers',
-     'Water Bottles / Flasks',
-     'Umbrellas'
    ],
    'Tech & Gadgets': [
      'Pendrives / Hard Drives (custom branded)',
@@ -89,13 +88,6 @@ const Add = ({token}) => {
      'Fitness Bands',
      'Sports Bags',
      'Arm Bands / Headbands'
-   ],
-   'Home & Dorm Essentials': [
-     'Bedsheets / Pillow Covers',
-     'Dorm Room Decor',
-     'Wall Clocks / Lamps',
-     'Storage Bins',
-     'Laundry Bags'
    ]
  };
 
@@ -178,6 +170,10 @@ const Add = ({token}) => {
       formData.append('collegeMerchandise', collegeMerchandise);
       formData.append('quantity', quantity);
       formData.append('color', color);
+      formData.append('weight', weight);
+      formData.append('length', length);
+      formData.append('breadth', breadth);
+      formData.append('height', height);
 
          
       console.log([...formData]);
@@ -193,6 +189,10 @@ const Add = ({token}) => {
         setMrpprice('');
         setQuantity(0);
         setColor('');
+        setWeight(400);
+        setLength(30);
+        setBreadth(27);
+        setHeight(2);
         setSizes([]);
         setBestseller(false);
         setImage1('');  
@@ -257,13 +257,11 @@ const Add = ({token}) => {
               <option value="Apparels">Apparels</option>
               <option value="Accessories">Accessories</option>
               <option value="Stationery & Academic Supplies">Stationery & Academic Supplies</option>
-              <option value="Lifestyle & Utility Items">Lifestyle & Utility Items</option>
               <option value="Tech & Gadgets">Tech & Gadgets</option>
               <option value="Event & Souvenir Merchandise">Event & Souvenir Merchandise</option>
               <option value="Eco-Friendly & Sustainable Merchandise">Eco-Friendly & Sustainable Merchandise</option>
               <option value="Gift Sets & Combos">Gift Sets & Combos</option>
               <option value="Sports & Fitness Merchandise">Sports & Fitness Merchandise</option>
-              <option value="Home & Dorm Essentials">Home & Dorm Essentials</option>
             </select>
            </div>
            <div>
@@ -361,6 +359,28 @@ const Add = ({token}) => {
            <div>
              <p className='mb-2 '>Color</p>
              <input onChange={(e)=>setColor(e.target.value)} value={color} className='w-full px-3 py-2 sm:w-[120px]' type="text" placeholder='Red' />
+           </div>
+         </div>
+
+         <div className='flex flex-col sm:flex-row gap-2 w-full sm:gap-8'>
+           <div>
+             <p className='mb-2 '>Weight (g)</p>
+             <input onChange={(e)=>setWeight(e.target.value)} value={weight} className='w-full px-3 py-2 sm:w-[120px]' type="Number" placeholder='400' min='1' required />
+           </div>
+
+           <div>
+             <p className='mb-2 '>Length (cm)</p>
+             <input onChange={(e)=>setLength(e.target.value)} value={length} className='w-full px-3 py-2 sm:w-[120px]' type="Number" placeholder='30' min='1' required />
+           </div>
+
+           <div>
+             <p className='mb-2 '>Breadth (cm)</p>
+             <input onChange={(e)=>setBreadth(e.target.value)} value={breadth} className='w-full px-3 py-2 sm:w-[120px]' type="Number" placeholder='27' min='1' required />
+           </div>
+
+           <div>
+             <p className='mb-2 '>Height (cm)</p>
+             <input onChange={(e)=>setHeight(e.target.value)} value={height} className='w-full px-3 py-2 sm:w-[120px]' type="Number" placeholder='2' min='1' required />
            </div>
          </div>
 

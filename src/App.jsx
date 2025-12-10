@@ -5,6 +5,7 @@ import { Routes, Route } from 'react-router-dom'
 import Add from './pages/Add'
 import List from './pages/List'
 import Orders from './pages/Orders'
+import OrderDetails from './pages/OrderDetails'
 import Login from './components/Login'
 import { ToastContainer, toast } from 'react-toastify';
 
@@ -35,6 +36,7 @@ useEffect(() => {
                 <Route path='/add' element={ <Add token={token} /> } />
                 <Route path='/list' element={ <List token={token} /> } />
                 <Route path='/orders' element={ <Orders token={token} /> } />
+                <Route path='/orders/:orderId' element={ <OrderDetails token={token} /> } />
             </Routes>
          </div>
       </div>

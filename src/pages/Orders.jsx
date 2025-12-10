@@ -5,8 +5,10 @@ import axios from 'axios'
 import { backendURL, currency } from '../App'
 import { toast } from 'react-toastify'
 import { assets } from '../assets/assets'
+import { useNavigate } from 'react-router-dom'
 
 const Orders = ({ token }) => {
+  const navigate = useNavigate()
   const [orders, setOrders] = useState([])
 
   const fetchAllOrders = async () => {
@@ -59,7 +61,11 @@ const Orders = ({ token }) => {
         <div>
           {
             orders.map((order,index)=>(
-              <div className='grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm  text-gray-700 ' key={index}>
+              <div 
+                className='grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700 hover:bg-gray-50 cursor-pointer transition-colors relative' 
+                key={index}
+                onClick={() => navigate(`/orders/${order._id}`)}
+              >
               <img className='w-12 ' src={assets.parcel_icon} alt="" />
               <div>
               <div>
@@ -90,6 +96,7 @@ const Orders = ({ token }) => {
               <p className='text-sm sm:text-[15px]'>{currency }{order.amount}</p>
               <select
               onChange={(e)=>statusHandler(e,order._id)}
+              onClick={(e)=>e.stopPropagation()}
               value={order.status} className='p-2 font-semibold '>
                 <option value="Order Placed">Order Placed</option>
                 <option value="Packing">Packing</option>
