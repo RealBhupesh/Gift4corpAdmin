@@ -357,12 +357,12 @@ const handleUpdateProduct = async (e) => {
    {/*  ------------products list ----------- */}
    {
     filteredList.map((item,index)=>{
-      // Calculate total stock for display (sum of all size variants or overall stock)
-      let displayStock = item.quantity || 0;
+      // Calculate available stock: sum of all size variant stocks if present, else overall quantity
+      let displayStock = (item.sizeVariants && item.sizeVariants.length > 0)
+        ? item.sizeVariants.reduce((sum, variant) => sum + (Number(variant.quantity) || 0), 0)
+        : (typeof item.quantity === 'number' ? item.quantity : 0);
       let stockTooltip = '';
-      
       if(item.sizeVariants && item.sizeVariants.length > 0){
-        displayStock = item.sizeVariants.reduce((sum, variant) => sum + (variant.quantity || 0), 0);
         stockTooltip = item.sizeVariants.map(v => `${v.size}: ${v.quantity}`).join(', ');
       }
       
