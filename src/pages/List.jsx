@@ -1,3 +1,14 @@
+// Category to subcategory mapping
+const categorySubcategoryMap = {
+  'Apparels': ['Men', 'Women', 'Kids'],
+  'Accessories': ['Bags', 'Wallets', 'Belts', 'Caps'],
+  'Stationery & Academic Supplies': ['Notebooks', 'Pens', 'Folders', 'Other'],
+  'Tech & Gadgets': ['Electronics', 'Mobile Accessories', 'Other'],
+  'Event & Souvenir Merchandise': ['Events', 'Souvenirs', 'Other'],
+  'Eco-Friendly & Sustainable Merchandise': ['Eco-Friendly', 'Sustainable', 'Other'],
+  'Gift Sets & Combos': ['Gift Sets', 'Combos', 'Other'],
+  'Sports & Fitness Merchandise': ['Sports', 'Fitness', 'Other'],
+};
 import axios from 'axios';
 import React, {  useEffect, useState } from 'react'
 import { backendURL, currency } from '../App';
@@ -449,17 +460,19 @@ const handleUpdateProduct = async (e) => {
                     <select
                       name='category'
                       value={formData.category}
-                      onChange={handleInputChange}
+                      onChange={e => {
+                        const newCategory = e.target.value;
+                        setFormData(prev => ({
+                          ...prev,
+                          category: newCategory,
+                          subCategory: (categorySubcategoryMap[newCategory] && categorySubcategoryMap[newCategory][0]) || ''
+                        }));
+                      }}
                       className='w-full px-3 py-2 border rounded'
                     >
-                      <option value='Apparels'>Apparels</option>
-                      <option value='Accessories'>Accessories</option>
-                      <option value='Stationery & Academic Supplies'>Stationery & Academic Supplies</option>
-                      <option value='Tech & Gadgets'>Tech & Gadgets</option>
-                      <option value='Event & Souvenir Merchandise'>Event & Souvenir Merchandise</option>
-                      <option value='Eco-Friendly & Sustainable Merchandise'>Eco-Friendly & Sustainable Merchandise</option>
-                      <option value='Gift Sets & Combos'>Gift Sets & Combos</option>
-                      <option value='Sports & Fitness Merchandise'>Sports & Fitness Merchandise</option>
+                      {Object.keys(categorySubcategoryMap).map(cat => (
+                        <option key={cat} value={cat}>{cat}</option>
+                      ))}
                     </select>
                   </div>
 
@@ -471,9 +484,9 @@ const handleUpdateProduct = async (e) => {
                       onChange={handleInputChange}
                       className='w-full px-3 py-2 border rounded'
                     >
-                      <option value='Men'>Men</option>
-                      <option value='Women'>Women</option>
-                      <option value='Kids'>Kids</option>
+                      {(categorySubcategoryMap[formData.category] || []).map(subCat => (
+                        <option key={subCat} value={subCat}>{subCat}</option>
+                      ))}
                     </select>
                   </div>
                 </div>
