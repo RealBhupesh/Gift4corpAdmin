@@ -1,20 +1,92 @@
 // Category to subcategory mapping
-const categorySubcategoryMap = {
-  'Apparels': ['Men', 'Women', 'Kids'],
-  'Accessories': ['Bags', 'Wallets', 'Belts', 'Caps'],
-  'Stationery & Academic Supplies': ['Notebooks', 'Pens', 'Folders', 'Other'],
-  'Tech & Gadgets': ['Electronics', 'Mobile Accessories', 'Other'],
-  'Event & Souvenir Merchandise': ['Events', 'Souvenirs', 'Other'],
-  'Eco-Friendly & Sustainable Merchandise': ['Eco-Friendly', 'Sustainable', 'Other'],
-  'Gift Sets & Combos': ['Gift Sets', 'Combos', 'Other'],
-  'Sports & Fitness Merchandise': ['Sports', 'Fitness', 'Other'],
+// Hardcoded subcategories for each category (copied from Add.jsx)
+const subCategoryOptions = {
+  'Apparels': [
+    'T-shirts (crew neck, polo, oversized, dri-fit)',
+    'Hoodies & Sweatshirts',
+    'Jackets & Windcheaters',
+    'Caps',
+    'Formal Wear (shirts)',
+    'Sports Jerseys',
+  ],
+  'Accessories': [
+    'Bags & Backpacks',
+    'Tote Bags / Sling Bags',
+    'Caps & Bandanas',
+    'Lanyards & ID Card Holders',
+    'Badges & Pins',
+    'Keychains'
+  ],
+  'Stationery & Academic Supplies': [
+    'Notebooks / Journals',
+    'Pens / Pencils / Highlighters',
+    'Folders / Files',
+    'Sticky Notes / Planners',
+    'Desk Organizers',
+    'Calendars',
+    'Bookmarks'
+  ],
+  'Tech & Gadgets': [
+    'Pendrives / Hard Drives (custom branded)',
+    'Mousepads',
+    'Phone Covers / Pop Sockets',
+    'Laptop Sleeves / Skins',
+    'Earphones / Bluetooth Speakers'
+  ],
+  'Event & Souvenir Merchandise': [
+    'Custom T-shirts / Hoodies for Events',
+    'Medals / Trophies / Plaques',
+    'Certificates / Frames',
+    'Photo Frames / Collages',
+    'Commemorative Coins or Pins',
+    'Batch / Alumni Gift Sets'
+  ],
+  'Eco-Friendly & Sustainable Merchandise': [
+    'Jute / Canvas Bags',
+    'Bamboo / Wooden Stationery',
+    'Plantable Notebooks / Seed Pens',
+    'Recycled Paper Products',
+    'Steel / Glass Bottles',
+    'Eco Gift Kits'
+  ],
+  'Gift Sets & Combos': [
+    'Welcome Kits (T-shirt, Notebook, Mug, ID Holder)',
+    'Corporate / Alumni Gift Sets',
+    'Fest Merchandise Boxes',
+    'Achievement / Graduation Boxes'
+  ],
+  'Sports & Fitness Merchandise': [
+    'Sports Kits / Jerseys',
+    'Gym Towels / Bottles',
+    'Yoga Mats',
+    'Fitness Bands',
+    'Sports Bags',
+    'Arm Bands / Headbands'
+  ]
 };
+
+
 import axios from 'axios';
-import React, {  useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { backendURL, currency } from '../App';
 import { toast } from 'react-toastify';
 
 const List = ({token}) => {
+  const [categories, setCategories] = useState([]);
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(backendURL + '/api/category/list');
+        if (response.data.success) {
+          setCategories(response.data.categories);
+        }
+      } catch (err) {
+        console.log(err);
+        toast.error('Failed to fetch categories');
+      }
+    };
+    fetchCategories();
+  }, []);
 
  const [list, setList] = useState([]);
  const [filteredList, setFilteredList] = useState([]);
@@ -468,12 +540,12 @@ const handleUpdateProduct = async (e) => {
                         setFormData(prev => ({
                           ...prev,
                           category: newCategory,
-                          subCategory: (categorySubcategoryMap[newCategory] && categorySubcategoryMap[newCategory][0]) || ''
+                          subCategory: (subCategoryOptions[newCategory] && subCategoryOptions[newCategory][0]) || ''
                         }));
                       }}
                       className='w-full px-3 py-2 border rounded'
                     >
-                      {Object.keys(categorySubcategoryMap).map(cat => (
+                      {Object.keys(subCategoryOptions).map(cat => (
                         <option key={cat} value={cat}>{cat}</option>
                       ))}
                     </select>
@@ -487,9 +559,15 @@ const handleUpdateProduct = async (e) => {
                       onChange={handleInputChange}
                       className='w-full px-3 py-2 border rounded'
                     >
-                      {(categorySubcategoryMap[formData.category] || []).map(subCat => (
-                        <option key={subCat} value={subCat}>{subCat}</option>
-                      ))}
+                      {(() => {
+                        const categoryData = categories.find(cat => cat.name === formData.category);
+                        const dynamicSubcategories = categoryData?.subcategories || [];
+                        const hardcodedSubcategories = subCategoryOptions[formData.category] || [];
+                        const allSubcategories = [...new Set([...hardcodedSubcategories, ...dynamicSubcategories])];
+                        return allSubcategories.map((sub) => (
+                          <option key={sub} value={sub}>{sub}</option>
+                        ));
+                      })()}
                     </select>
                   </div>
                 </div>
@@ -615,7 +693,7 @@ const handleUpdateProduct = async (e) => {
                   <div>
                     <label className='block mb-2 font-medium'>Sizes</label>
                     <div className='flex gap-2 flex-wrap'>
-                      {['S', 'M', 'L', 'XL', 'XXL', 'XXXL'].map(size => (
+                      {['S', 'M', 'L', 'XL', 'XXL', '3XL'].map(size => (
                         <button
                           key={size}
                           type='button'
@@ -638,7 +716,7 @@ const handleUpdateProduct = async (e) => {
                       <div className='space-y-3'>
                         {formData.sizeVariants.map((variant, index) => (
                           <div key={variant.size} className='flex gap-3 items-center bg-white p-3 rounded border'>
-                            <div className='w-12 font-bold text-center'>{variant.size}</div>
+                            <div className='w-12 font-bold text-center'>{variant.size === 'XXXL' ? '3XL' : variant.size}</div>
                             <div className='flex-1'>
                               <label className='text-xs text-gray-600'>Price</label>
                               <input 
