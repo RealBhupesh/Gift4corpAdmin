@@ -9,6 +9,7 @@ const Add = ({token}) => {
  const [image2, setImage2] = useState(false);
  const [image3, setImage3] = useState(false);
  const [image4, setImage4] = useState(false);
+ const [isSubmitting, setIsSubmitting] = useState(false);
 
 
  const [name, setName] = useState('');
@@ -244,13 +245,26 @@ const Add = ({token}) => {
 
  const onSubmitHandler = async(e) => {
     e.preventDefault();
-
+    // Client-side validation for all required fields
+    if (!image1 || !name.trim() || !description.trim() || !price || !Mrpprice || !category || !subCategory || !collegeMerchandise || (!useSizeVariants && (!quantity && quantity !== 0)) || !color.trim() || !brand.trim() || !weight || !length || !breadth || !height) {
+      toast.error('Please fill all required fields and upload the first image.');
+      return;
+    }
+    if (category === 'Apparels' && sizes.length === 0) {
+      toast.error('Please select at least one size.');
+      return;
+    }
+    if (useSizeVariants && sizeVariants.length === 0) {
+      toast.error('Please add at least one size variant.');
+      return;
+    }
+    setIsSubmitting(true);
     try{
       const formData = new FormData();
-     image1&& formData.append('image1', image1);
-      image2&& formData.append('image2', image2);
-      image3&& formData.append('image3', image3);
-      image4&& formData.append('image4', image4);
+      image1 && formData.append('image1', image1);
+      image2 && formData.append('image2', image2);
+      image3 && formData.append('image3', image3);
+      image4 && formData.append('image4', image4);
       formData.append('name', name);
       formData.append('description', description);
       formData.append('price', price);
@@ -262,7 +276,6 @@ const Add = ({token}) => {
       formData.append('useSizeVariants', useSizeVariants);
       formData.append('sizeVariants', JSON.stringify(sizeVariants));
       formData.append('collegeMerchandise', collegeMerchandise);
-      // Only send general quantity if not using size variants
       if (!useSizeVariants) {
         formData.append('quantity', quantity);
       }
@@ -272,13 +285,8 @@ const Add = ({token}) => {
       formData.append('length', length);
       formData.append('breadth', breadth);
       formData.append('height', height);
-
-         
       console.log([...formData]);
-
-     const response=await axios.post(backendURL+'/api/product/add', formData,{headers:{token}})
-      
-
+      const response=await axios.post(backendURL+'/api/product/add', formData,{headers:{token}})
       if(response.data.success){
         toast.success(response.data.message);
         setName('');
@@ -303,14 +311,11 @@ const Add = ({token}) => {
       }else{
         toast.error(response.data.message );
       }
-
-
     } catch(err){
       console.log(err);
-       toast.error(err.response.data.message );
+      toast.error(err.response?.data?.message || 'Error adding product');
     }   
-
-  } 
+  }
 
 
   return (
@@ -790,7 +795,9 @@ const Add = ({token}) => {
  </div>
         
 
-        <button type='submit ' className='w-28 py-3 mt-4 bg-black text-white  '>Add Product</button>
+        <button type='submit' className='w-28 py-3 mt-4 bg-black text-white' disabled={isSubmitting}>
+          {isSubmitting ? 'Adding...' : 'Add Product'}
+        </button>
     </form>
   )
 }

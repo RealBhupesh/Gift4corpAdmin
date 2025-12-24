@@ -18,17 +18,14 @@ const Sidebar = () => {
                  <img className='w-5 h-5' src={assets.order_icon} alt="" />
                  <p className='hidden md:block'>List Items</p>
             </NavLink>
-            <NavLink to='/categories' className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-l ' >
-                 <p className='text-xl'>🏷️</p>
-                 <p className='hidden md:block'>Categories</p>
-            </NavLink>
-            <NavLink to='/merchandise' className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-l ' >
-                 <p className='text-xl'>🏫</p>
-                 <p className='hidden md:block'>Merchandise</p>
-            </NavLink>
+           
             <NavLink to='/orders' className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-l ' >
                  <img className='w-5 h-5' src={assets.order_icon} alt="" />
                  <p className='hidden md:block'>Orders</p>
+            </NavLink>
+            <NavLink to='/settings' className='flex items-center gap-3 border border-gray-300 border-r-0 px-3 py-2 rounded-l ' >
+                 <span className='text-xl'>⚙️</span>
+                 <p className='hidden md:block'>Settings</p>
             </NavLink>
         </div>
     </div>

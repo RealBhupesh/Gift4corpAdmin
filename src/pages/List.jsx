@@ -1,7 +1,7 @@
 // Category to subcategory mapping
 // Hardcoded subcategories for each category (copied from Add.jsx)
 const subCategoryOptions = {
-  'Apparels': [
+  Apparels: [
     'T-shirts (crew neck, polo, oversized, dri-fit)',
     'Hoodies & Sweatshirts',
     'Jackets & Windcheaters',
@@ -9,7 +9,7 @@ const subCategoryOptions = {
     'Formal Wear (shirts)',
     'Sports Jerseys',
   ],
-  'Accessories': [
+  Accessories: [
     'Bags & Backpacks',
     'Tote Bags / Sling Bags',
     'Caps & Bandanas',
@@ -50,7 +50,7 @@ const subCategoryOptions = {
     'Eco Gift Kits'
   ],
   'Gift Sets & Combos': [
-    'Welcome Kits (T-shirt, Notebook, Mug, ID Holder)',
+    'Welcome Kits',
     'Corporate / Alumni Gift Sets',
     'Fest Merchandise Boxes',
     'Achievement / Graduation Boxes'
@@ -72,6 +72,7 @@ import { backendURL, currency } from '../App';
 import { toast } from 'react-toastify';
 
 const List = ({token}) => {
+  const [isUpdating, setIsUpdating] = useState(false);
   const [categories, setCategories] = useState([]);
   useEffect(() => {
     const fetchCategories = async () => {
@@ -116,6 +117,7 @@ const List = ({token}) => {
    sizeVariants: []
  });
  const [images, setImages] = useState([null, null, null, null]);
+ const [deletedImages, setDeletedImages] = useState([]);
 
  const fetchList = async() => {
   try{
@@ -165,13 +167,20 @@ const removeProduct=async(id)=>{
 const openEditDialog = (product) => {
   setEditProduct(product);
   const hasSizeVariants = product.sizeVariants && product.sizeVariants.length > 0;
+  // Determine valid subcategory
+  let validSubCategory = product.subCategory;
+  const hardcodedSubcategories = subCategoryOptions[product.category] || [];
+  // If subCategory is missing or not in the list, use first available
+  if (!validSubCategory || ![...hardcodedSubcategories].includes(validSubCategory)) {
+    validSubCategory = hardcodedSubcategories[0] || '';
+  }
   setFormData({
     name: product.name,
     description: product.description,
     price: product.price,
     Mrpprice: product.Mrpprice,
     category: product.category,
-    subCategory: product.subCategory,
+    subCategory: validSubCategory,
     bestseller: product.bestseller,
     collegeMerchandise: product.collegeMerchandise || '',
     sizes: product.sizes || [],
@@ -182,6 +191,7 @@ const openEditDialog = (product) => {
     sizeVariants: hasSizeVariants ? product.sizeVariants : []
   });
   setImages([null, null, null, null]);
+  setDeletedImages([]);
   setShowEditDialog(true);
 }
 
@@ -247,7 +257,7 @@ const handleImageChange = (index, e) => {
 
 const handleUpdateProduct = async (e) => {
   e.preventDefault();
-
+  setIsUpdating(true);
   try {
     const formDataToSend = new FormData();
     formDataToSend.append('id', editProduct._id);
@@ -259,7 +269,6 @@ const handleUpdateProduct = async (e) => {
     formDataToSend.append('subCategory', formData.subCategory);
     formDataToSend.append('bestseller', formData.bestseller);
     formDataToSend.append('collegeMerchandise', formData.collegeMerchandise);
-    // Only send general quantity if not using size variants
     if (!formData.useSizeVariants) {
       formDataToSend.append('quantity', formData.quantity);
     }
@@ -267,23 +276,22 @@ const handleUpdateProduct = async (e) => {
     formDataToSend.append('brand', formData.brand);
     formDataToSend.append('useSizeVariants', formData.useSizeVariants);
     formDataToSend.append('sizeVariants', JSON.stringify(formData.sizeVariants));
-    
     if (formData.sizes.length > 0) {
       formDataToSend.append('sizes', JSON.stringify(formData.sizes));
     }
-
     images.forEach((image, index) => {
       if (image) {
         formDataToSend.append(`image${index + 1}`, image);
       }
     });
-
+    if (deletedImages.length > 0) {
+      formDataToSend.append('deletedImages', JSON.stringify(deletedImages));
+    }
     const response = await axios.put(
       backendURL + '/api/product/update',
       formDataToSend,
       { headers: { token } }
     );
-
     if (response.data.success) {
       toast.success(response.data.message);
       closeEditDialog();
@@ -294,6 +302,8 @@ const handleUpdateProduct = async (e) => {
   } catch (err) {
     console.log(err);
     toast.error(err.message);
+  } finally {
+    setIsUpdating(false);
   }
 }
 ``
@@ -780,23 +790,46 @@ const handleUpdateProduct = async (e) => {
                   <label className='font-medium'>Add to Bestseller</label>
                 </div>
 
-                {/* Current Images */}
+                {/* Current Images with delete option */}
                 <div>
                   <label className='block mb-2 font-medium'>Current Images</label>
                   <div className='flex gap-2 flex-wrap'>
                     {editProduct.image.map((img, idx) => (
-                      <img key={idx} src={img} alt='' className='w-20 h-20 object-cover border rounded' />
+                      <div key={idx} className='relative w-20 h-20'>
+                        {img ? (
+                          <>
+                            <img src={img} alt='' className='w-20 h-20 object-cover border rounded' />
+                            <button
+                              type='button'
+                              className='absolute top-1 right-1 bg-white text-red-600 border rounded-full w-6 h-6 flex items-center justify-center shadow'
+                              onClick={() => {
+                                // Remove image from editProduct and formData only if user clicks delete
+                                // Mark image as deleted and remove from display
+                                const updatedImages = [...editProduct.image];
+                                updatedImages[idx] = null;
+                                setEditProduct(prev => ({ ...prev, image: updatedImages }));
+                                setDeletedImages(prev => [...prev, idx]);
+                              }}
+                              title='Delete image'
+                            >
+                              ×
+                            </button>
+                          </>
+                        ) : (
+                          <div className='w-20 h-20 flex items-center justify-center border rounded bg-gray-100 text-gray-400'>No Image</div>
+                        )}
+                      </div>
                     ))}
                   </div>
                 </div>
 
-                {/* Upload New Images */}
+                {/* Upload New Images (replaces deleted or empty slots) */}
                 <div>
                   <label className='block mb-2 font-medium'>Upload New Images (Optional)</label>
                   <div className='grid grid-cols-2 md:grid-cols-4 gap-2'>
-                    {[1, 2, 3, 4].map((num, idx) => (
-                      <div key={num}>
-                        <label className='block text-sm mb-1'>Image {num}</label>
+                    {[0, 1, 2, 3].map((idx) => (
+                      <div key={idx}>
+                        <label className='block text-sm mb-1'>Image {idx + 1}</label>
                         <input
                           type='file'
                           accept='image/*'
@@ -820,8 +853,9 @@ const handleUpdateProduct = async (e) => {
                   <button
                     type='submit'
                     className='px-6 py-2 bg-blue-600 text-white rounded hover:bg-blue-700'
+                    disabled={isUpdating}
                   >
-                    Update Product
+                    {isUpdating ? 'Updating...' : 'Update Product'}
                   </button>
                 </div>
               </form>
@@ -833,3 +867,5 @@ const handleUpdateProduct = async (e) => {
 }
 
 export default List;
+
+

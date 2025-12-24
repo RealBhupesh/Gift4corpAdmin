@@ -10,6 +10,7 @@ import OrderDetails from './pages/OrderDetails'
 import Login from './components/Login'
 import ManageCategories from './pages/ManageCategories'
 import ManageMerchandise from './pages/ManageMerchandise'
+import Settings from './pages/Settings'
 import { ToastContainer, toast } from 'react-toastify';
 
 export const backendURL = import.meta.env.VITE_BACKEND_URL
@@ -36,13 +37,14 @@ useEffect(() => {
          <Sidebar />
          <div className='w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base  '>
             <Routes>
-                <Route path='/' element={ <Dashboard token={token} /> } />
-                <Route path='/add' element={ <Add token={token} /> } />
-                <Route path='/list' element={ <List token={token} /> } />
-                <Route path='/orders' element={ <Orders token={token} /> } />
-                <Route path='/orders/:orderId' element={ <OrderDetails token={token} /> } />
-                <Route path='/categories' element={ <ManageCategories token={token} /> } />
-                <Route path='/merchandise' element={ <ManageMerchandise token={token} /> } />
+              <Route path='/' element={ <Dashboard token={token} /> } />
+              <Route path='/add' element={ <Add token={token} /> } />
+              <Route path='/list' element={ <List token={token} /> } />
+              <Route path='/orders' element={ <Orders token={token} /> } />
+              <Route path='/orders/:orderId' element={ <OrderDetails token={token} /> } />
+              <Route path='/categories' element={ <ManageCategories token={token} /> } />
+              <Route path='/merchandise' element={ <ManageMerchandise token={token} /> } />
+              <Route path='/settings' element={ <Settings token={token} /> } />
             </Routes>
          </div>
       </div>
