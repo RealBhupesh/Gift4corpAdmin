@@ -243,19 +243,120 @@ const Add = ({token}) => {
    }
  };
 
+ const validateForm = () => {
+    // Image validation
+    if (!image1) {
+      toast.error('Please upload the first image');
+      return false;
+    }
+
+    // Name validation
+    if (!name.trim()) {
+      toast.error('Please enter product name');
+      return false;
+    }
+
+    // Description validation
+    if (!description.trim()) {
+      toast.error('Please enter product description');
+      return false;
+    }
+
+    // Price validation
+    if (!price || price <= 0) {
+      toast.error('Please enter a valid product price');
+      return false;
+    }
+
+    // MRP Price validation
+    if (!Mrpprice || Mrpprice <= 0) {
+      toast.error('Please enter a valid MRP price');
+      return false;
+    }
+
+    // Category validation
+    if (!category) {
+      toast.error('Please select a category');
+      return false;
+    }
+
+    // SubCategory validation
+    if (!subCategory) {
+      toast.error('Please select a subcategory');
+      return false;
+    }
+
+    // College Merchandise validation
+    if (!collegeMerchandise) {
+      toast.error('Please select college merchandise');
+      return false;
+    }
+
+    // Quantity or Size Variants validation
+    if (!useSizeVariants) {
+      if (quantity === '' || quantity < 0) {
+        toast.error('Please enter a valid quantity');
+        return false;
+      }
+    }
+
+    // Color validation
+    if (!color.trim()) {
+      toast.error('Please enter product color');
+      return false;
+    }
+
+    // Brand validation
+    if (!brand.trim()) {
+      toast.error('Please enter product brand');
+      return false;
+    }
+
+    // Weight validation
+    if (!weight || weight <= 0) {
+      toast.error('Please enter a valid weight');
+      return false;
+    }
+
+    // Length validation
+    if (!length || length <= 0) {
+      toast.error('Please enter a valid length');
+      return false;
+    }
+
+    // Breadth validation
+    if (!breadth || breadth <= 0) {
+      toast.error('Please enter a valid breadth');
+      return false;
+    }
+
+    // Height validation
+    if (!height || height <= 0) {
+      toast.error('Please enter a valid height');
+      return false;
+    }
+
+    // Apparel-specific validation
+    if (category === 'Apparels' && sizes.length === 0) {
+      toast.error('Please select at least one size for Apparels');
+      return false;
+    }
+
+    // Size Variants validation
+    if (useSizeVariants && sizeVariants.length === 0) {
+      toast.error('Please add at least one size variant');
+      return false;
+    }
+
+    return true;
+  };
+
  const onSubmitHandler = async(e) => {
     e.preventDefault();
-    // Client-side validation for all required fields
-    if (!image1 || !name.trim() || !description.trim() || !price || !Mrpprice || !category || !subCategory || !collegeMerchandise || (!useSizeVariants && (!quantity && quantity !== 0)) || !color.trim() || !brand.trim() || !weight || !length || !breadth || !height) {
-      toast.error('Please fill all required fields and upload the first image.');
-      return;
-    }
-    if (category === 'Apparels' && sizes.length === 0) {
-      toast.error('Please select at least one size.');
-      return;
-    }
-    if (useSizeVariants && sizeVariants.length === 0) {
-      toast.error('Please add at least one size variant.');
+    
+    // Validate form before submission
+    if (!validateForm()) {
+      setIsSubmitting(false);
       return;
     }
     setIsSubmitting(true);
