@@ -185,21 +185,21 @@ const Dashboard = ({ token }) => {
   if (loading) {
     return (
       <div className='flex items-center justify-center min-h-[60vh]'>
-        <div className='text-center'>
-          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto'></div>
-          <p className='mt-4 text-gray-600'>Loading dashboard...</p>
+        <div className='text-center glass-card px-6 py-5'>
+          <div className='animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--accent)] mx-auto'></div>
+          <p className='mt-4 text-muted'>Loading dashboard...</p>
         </div>
       </div>
     );
   }
 
   const StatCard = ({ title, value, icon, color, subtitle }) => (
-    <div className={`bg-white rounded-lg shadow-md p-6 border-l-4 ${color} hover:shadow-lg transition-shadow`}>
+    <div className={`glass-card p-6 border ${color}`}>
       <div className='flex justify-between items-start'>
         <div>
-          <p className='text-gray-600 text-sm font-medium'>{title}</p>
-          <p className='text-3xl font-bold mt-2 text-gray-800'>{value}</p>
-          {subtitle && <p className='text-sm text-gray-500 mt-1'>{subtitle}</p>}
+          <p className='text-muted text-sm font-medium'>{title}</p>
+          <p className='text-3xl font-semibold mt-2 text-[var(--text)]'>{value}</p>
+          {subtitle && <p className='text-sm text-muted mt-1'>{subtitle}</p>}
         </div>
         <div className='text-4xl'>{icon}</div>
       </div>
@@ -207,13 +207,16 @@ const Dashboard = ({ token }) => {
   );
 
   return (
-    <div className='pb-8'>
-      <div className='flex justify-between items-center mb-6'>
-        <h2 className='text-3xl font-bold text-gray-800'>Dashboard</h2>
+    <div className='pb-8 space-y-8'>
+      <div className='flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4'>
+        <div>
+          <h2 className='page-title'>Dashboard</h2>
+          <p className='text-muted text-sm'>Overview of orders, revenue, and fulfillment.</p>
+        </div>
         
         {/* Filter Section */}
-        <div className='flex gap-3 items-center'>
-          <span className='text-sm font-medium text-gray-600'>Filter:</span>
+        <div className='glass-surface flex flex-wrap gap-3 items-center px-4 py-3'>
+          <span className='text-sm font-medium text-muted'>Filter:</span>
           <select
             value={filterType}
             onChange={(e) => {
@@ -222,7 +225,7 @@ const Dashboard = ({ token }) => {
                 setSelectedMonth('');
               }
             }}
-            className='border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+            className='glass-input text-sm'
           >
             <option value='all'>All Time</option>
             <option value='today'>Today</option>
@@ -237,135 +240,135 @@ const Dashboard = ({ token }) => {
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
               max={new Date().toISOString().slice(0, 7)}
-              className='border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500'
+              className='glass-input text-sm'
             />
           )}
           
-          <div className='bg-blue-50 text-blue-700 px-4 py-2 rounded-lg text-sm font-medium'>
+          <div className='glass-pill text-sm'>
             Showing: {getFilterLabel()}
           </div>
         </div>
       </div>
 
       {/* Stats Grid */}
-      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8'>
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6'>
         <StatCard
           title='Total Orders'
           value={stats.totalOrders}
           icon='📦'
-          color='border-blue-500'
+          color='border-[color-mix(in srgb,var(--accent)_55%,transparent)]'
           subtitle={`${stats.totalProducts} products sold`}
         />
         <StatCard
           title='Pending Payments'
           value={stats.pendingPayments}
           icon='⏳'
-          color='border-yellow-500'
+          color='border-[color-mix(in srgb,var(--warning)_60%,transparent)]'
         />
         <StatCard
           title='Shipped Orders'
           value={stats.shippedOrders}
           icon='🚚'
-          color='border-green-500'
+          color='border-[color-mix(in srgb,var(--success)_60%,transparent)]'
         />
         <StatCard
           title='Delivered Orders'
           value={stats.deliveredOrders}
           icon='✅'
-          color='border-purple-500'
+          color='border-[color-mix(in srgb,var(--accent-2)_60%,transparent)]'
         />
       </div>
 
       {/* Additional Stats */}
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
         <StatCard
           title='Processing Orders'
           value={stats.processingOrders}
           icon='⚙️'
-          color='border-orange-500'
+          color='border-[color-mix(in srgb,var(--warning)_60%,transparent)]'
         />
         <StatCard
           title='Total Revenue'
           value={`${currency}${stats.totalRevenue.toFixed(2)}`}
           icon='💰'
-          color='border-green-600'
+          color='border-[color-mix(in srgb,var(--success)_60%,transparent)]'
         />
         <StatCard
           title='Products Sold'
           value={stats.totalProducts}
           icon='📊'
-          color='border-indigo-500'
+          color='border-[color-mix(in srgb,var(--accent)_60%,transparent)]'
         />
       </div>
 
       {/* Recent Orders */}
-      <div className='bg-white rounded-lg shadow-md p-6 mb-8'>
+      <div className='glass-card p-6'>
         <div className='flex justify-between items-center mb-4'>
-          <h3 className='text-xl font-semibold text-gray-800'>Recent Orders</h3>
+          <h3 className='section-title'>Recent Orders</h3>
           <button
             onClick={() => navigate('/orders')}
-            className='text-blue-600 hover:text-blue-800 text-sm font-medium'
+            className='btn btn-ghost text-sm'
           >
             View All →
           </button>
         </div>
 
         {recentOrders.length === 0 ? (
-          <div className='text-center py-8 text-gray-500'>
+          <div className='text-center py-8 text-muted'>
             <p>No orders yet</p>
           </div>
         ) : (
           <div className='overflow-x-auto'>
-            <table className='w-full'>
-              <thead className='bg-gray-50 border-b'>
+            <table className='glass-table'>
+              <thead>
                 <tr>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Order ID</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Customer</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Items</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Amount</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Status</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Payment</th>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                  <th>Payment</th>
                 </tr>
               </thead>
-              <tbody className='divide-y divide-gray-200'>
+              <tbody>
                 {recentOrders.map((order, index) => (
                   <tr
                     key={index}
                     onClick={() => navigate(`/orders/${order._id}`)}
-                    className='hover:bg-gray-50 cursor-pointer transition-colors'
+                    className='cursor-pointer'
                   >
-                    <td className='px-4 py-3 text-sm'>
+                    <td>
                       <span className='font-mono font-medium'>#{order._id.slice(-8).toUpperCase()}</span>
                     </td>
-                    <td className='px-4 py-3 text-sm'>
+                    <td>
                       <div>
                         <p className='font-medium'>{order.address.firstName} {order.address.lastName}</p>
-                        <p className='text-xs text-gray-500'>{order.address.city}</p>
+                        <p className='text-xs text-muted'>{order.address.city}</p>
                       </div>
                     </td>
-                    <td className='px-4 py-3 text-sm'>{order.items.length}</td>
-                    <td className='px-4 py-3 text-sm font-semibold'>{currency}{order.amount}</td>
-                    <td className='px-4 py-3 text-sm'>
+                    <td>{order.items.length}</td>
+                    <td className='font-semibold'>{currency}{order.amount}</td>
+                    <td>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           order.status === 'Delivered'
-                            ? 'bg-green-100 text-green-800'
+                            ? 'bg-[color-mix(in_srgb,var(--success)_18%,transparent)] text-[var(--success)]'
                             : order.status === 'Shipped'
-                            ? 'bg-blue-100 text-blue-800'
+                            ? 'bg-[color-mix(in_srgb,var(--accent)_18%,transparent)] text-[var(--accent)]'
                             : order.status === 'Cancelled'
-                            ? 'bg-red-100 text-red-800'
-                            : 'bg-yellow-100 text-yellow-800'
+                            ? 'bg-[color-mix(in_srgb,var(--danger)_18%,transparent)] text-[var(--danger)]'
+                            : 'bg-[color-mix(in_srgb,var(--warning)_18%,transparent)] text-[var(--warning)]'
                         }`}
                       >
                         {order.status}
                       </span>
                     </td>
-                    <td className='px-4 py-3 text-sm'>
+                    <td>
                       <span
                         className={`px-2 py-1 rounded-full text-xs font-medium ${
                           order.payment
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
+                            ? 'bg-[color-mix(in_srgb,var(--success)_18%,transparent)] text-[var(--success)]'
+                            : 'bg-[color-mix(in_srgb,var(--danger)_18%,transparent)] text-[var(--danger)]'
                         }`}
                       >
                         {order.payment ? 'Paid' : 'Pending'}
@@ -380,75 +383,75 @@ const Dashboard = ({ token }) => {
       </div>
 
       {/* Top Selling Products */}
-      <div className='bg-white rounded-lg shadow-md p-6'>
+      <div className='glass-card p-6'>
         <div className='flex justify-between items-center mb-4'>
-          <h3 className='text-xl font-semibold text-gray-800'>Top Selling Products</h3>
+          <h3 className='section-title'>Top Selling Products</h3>
           <button
             onClick={() => navigate('/list')}
-            className='text-blue-600 hover:text-blue-800 text-sm font-medium'
+            className='btn btn-ghost text-sm'
           >
             View All Products →
           </button>
         </div>
 
         {topProducts.length === 0 ? (
-          <div className='text-center py-8 text-gray-500'>
+          <div className='text-center py-8 text-muted'>
             <p>No products sold yet</p>
           </div>
         ) : (
           <div className='overflow-x-auto'>
-            <table className='w-full'>
-              <thead className='bg-gray-50 border-b'>
+            <table className='glass-table'>
+              <thead>
                 <tr>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Rank</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Product</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Category</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Units Sold</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Orders</th>
-                  <th className='px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase'>Revenue</th>
+                  <th>Rank</th>
+                  <th>Product</th>
+                  <th>Category</th>
+                  <th>Units Sold</th>
+                  <th>Orders</th>
+                  <th>Revenue</th>
                 </tr>
               </thead>
-              <tbody className='divide-y divide-gray-200'>
+              <tbody>
                 {topProducts.map((product, index) => (
-                  <tr key={index} className='hover:bg-gray-50 transition-colors'>
-                    <td className='px-4 py-3 text-sm'>
+                  <tr key={index}>
+                    <td>
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${
-                        index === 0 ? 'bg-yellow-100 text-yellow-700' :
-                        index === 1 ? 'bg-gray-100 text-gray-700' :
-                        index === 2 ? 'bg-orange-100 text-orange-700' :
-                        'bg-blue-50 text-blue-600'
+                        index === 0 ? 'bg-[color-mix(in_srgb,var(--warning)_20%,transparent)] text-[var(--warning)]' :
+                        index === 1 ? 'bg-[color-mix(in_srgb,var(--muted)_15%,transparent)] text-[var(--muted)]' :
+                        index === 2 ? 'bg-[color-mix(in_srgb,var(--danger)_15%,transparent)] text-[var(--danger)]' :
+                        'bg-[color-mix(in_srgb,var(--accent)_15%,transparent)] text-[var(--accent)]'
                       }`}>
                         {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : index + 1}
                       </div>
                     </td>
-                    <td className='px-4 py-3 text-sm'>
+                    <td>
                       <div className='flex items-center gap-3'>
                         {product.image && (
                           <img 
                             src={product.image} 
                             alt={product.name}
-                            className='w-12 h-12 object-cover rounded border'
+                            className='w-12 h-12 object-cover rounded border border-[var(--glass-stroke)]'
                           />
                         )}
                         <div>
-                          <p className='font-medium text-gray-800'>{product.name}</p>
-                          <p className='text-xs text-gray-500'>ID: {product.id.slice(-8)}</p>
+                          <p className='font-medium text-[var(--text)]'>{product.name}</p>
+                          <p className='text-xs text-muted'>ID: {product.id.slice(-8)}</p>
                         </div>
                       </div>
                     </td>
-                    <td className='px-4 py-3 text-sm'>
-                      <span className='px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs'>
+                    <td>
+                      <span className='glass-pill text-xs'>
                         {product.category || 'N/A'}
                       </span>
                     </td>
-                    <td className='px-4 py-3 text-sm'>
+                    <td>
                       <div className='flex items-center gap-2'>
-                        <span className='font-bold text-lg text-blue-600'>{product.quantitySold}</span>
-                        <span className='text-gray-500 text-xs'>units</span>
+                        <span className='font-bold text-lg text-[var(--accent)]'>{product.quantitySold}</span>
+                        <span className='text-muted text-xs'>units</span>
                       </div>
                     </td>
-                    <td className='px-4 py-3 text-sm font-medium'>{product.orderCount}</td>
-                    <td className='px-4 py-3 text-sm font-semibold text-green-600'>
+                    <td className='font-medium'>{product.orderCount}</td>
+                    <td className='font-semibold text-[var(--success)]'>
                       {currency}{product.revenue.toFixed(2)}
                     </td>
                   </tr>

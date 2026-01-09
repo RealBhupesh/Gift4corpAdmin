@@ -420,9 +420,14 @@ const Add = ({token}) => {
 
 
   return (
-    <form
-    onSubmit={onSubmitHandler}
-    className='flex flex-col w-full items-start gap-3 ' >
+    <div className='space-y-6'>
+      <div>
+        <h2 className='page-title'>Add New Product</h2>
+        <p className='text-sm text-muted'>Upload images and define pricing, inventory, and variants.</p>
+      </div>
+      <form
+      onSubmit={onSubmitHandler}
+      className='glass-card flex flex-col w-full items-start gap-4 p-6' >
          <div>
           <p className='mb-2'>Upload Image</p>
           <div className='flex gap-2'>
@@ -896,10 +901,11 @@ const Add = ({token}) => {
  </div>
         
 
-        <button type='submit' className='w-28 py-3 mt-4 bg-black text-white' disabled={isSubmitting}>
+        <button type='submit' className='btn btn-primary mt-4 w-32' disabled={isSubmitting}>
           {isSubmitting ? 'Adding...' : 'Add Product'}
         </button>
     </form>
+    </div>
   )
 }
 
