@@ -351,21 +351,22 @@ const handleUpdateProduct = async (e) => {
 
 
   return (
-    <>
-
-    <p className='mb-2 '>All Products List</p>
-    
+    <div className='space-y-6'>
+    <div>
+      <h2 className='page-title'>All Products</h2>
+      <p className='text-sm text-muted'>Filter, sort, and manage product inventory.</p>
+    </div>
     {/* Filter Controls */}
-    <div className='flex flex-wrap gap-4 mb-4 p-4 bg-gray-50 border rounded'>
+    <div className='glass-surface flex flex-wrap gap-4 p-4'>
       <div className='flex flex-col gap-1'>
-        <label className='text-sm font-medium'>Category</label>
+        <label className='text-sm font-medium text-muted'>Category</label>
         <select 
           value={categoryFilter} 
           onChange={(e) => {
             setCategoryFilter(e.target.value);
             setSubCategoryFilter('all'); // Reset subcategory when category changes
           }}
-          className='px-3 py-2 border rounded'
+          className='glass-input'
         >
           <option value='all'>All Categories</option>
           {availableCategories.map((cat, index) => (
@@ -375,11 +376,11 @@ const handleUpdateProduct = async (e) => {
       </div>
 
       <div className='flex flex-col gap-1'>
-        <label className='text-sm font-medium'>Subcategory</label>
+        <label className='text-sm font-medium text-muted'>Subcategory</label>
         <select 
           value={subCategoryFilter} 
           onChange={(e) => setSubCategoryFilter(e.target.value)}
-          className='px-3 py-2 border rounded'
+          className='glass-input'
         >
           <option value='all'>All Subcategories</option>
           {availableSubCategories.map((subCat, index) => (
@@ -389,11 +390,11 @@ const handleUpdateProduct = async (e) => {
       </div>
 
       <div className='flex flex-col gap-1'>
-        <label className='text-sm font-medium'>Stock Filter</label>
+        <label className='text-sm font-medium text-muted'>Stock Filter</label>
         <select 
           value={stockFilter} 
           onChange={(e) => setStockFilter(e.target.value)}
-          className='px-3 py-2 border rounded'
+          className='glass-input'
         >
           <option value='all'>All Products</option>
           <option value='low'>Low Stock</option>
@@ -403,23 +404,23 @@ const handleUpdateProduct = async (e) => {
 
       {stockFilter === 'low' && (
         <div className='flex flex-col gap-1'>
-          <label className='text-sm font-medium'>Low Stock Threshold</label>
+          <label className='text-sm font-medium text-muted'>Low Stock Threshold</label>
           <input
             type='number'
             value={lowStockThreshold}
             onChange={(e) => setLowStockThreshold(Number(e.target.value))}
             min='1'
-            className='px-3 py-2 border rounded w-24'
+            className='glass-input w-24'
           />
         </div>
       )}
 
       <div className='flex flex-col gap-1'>
-        <label className='text-sm font-medium'>Sort by Price</label>
+        <label className='text-sm font-medium text-muted'>Sort by Price</label>
         <select 
           value={priceSort} 
           onChange={(e) => setPriceSort(e.target.value)}
-          className='px-3 py-2 border rounded'
+          className='glass-input'
         >
           <option value='default'>Default</option>
           <option value='low-high'>Price: Low to High</option>
@@ -428,19 +429,19 @@ const handleUpdateProduct = async (e) => {
       </div>
 
       <div className='flex flex-col gap-1 justify-end'>
-        <p className='text-sm font-medium text-gray-700'>
+        <p className='text-sm font-medium text-muted'>
           Showing {filteredList.length} of {list.length} products
         </p>
       </div>
     </div>
 
-        <div className='flex flex-col gap-2'>
+        <div className='glass-card flex flex-col gap-2 p-4'>
 
 
  {/*  list table title */}
 
  
-  <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr_1fr] items-center py-1 px-2 border bg-gray-100 text-sm '>
+  <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr_1fr] items-center py-2 px-2 text-sm text-muted'>
     <b>Image</b>
     <b>Name</b>
     <b>Category</b>
@@ -463,33 +464,33 @@ const handleUpdateProduct = async (e) => {
       }
       
       return (
-               <div className='grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr_1fr] items-center gap-2 py-1 px-2 border text-sm ' key={index}>
-                 <img className='w-12' src={item.image[0]} alt="" />
+               <div className='grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr_1fr] items-center gap-2 py-3 px-2 text-sm border-t border-[var(--glass-stroke)]' key={index}>
+                 <img className='w-12 rounded border border-[var(--glass-stroke)]' src={item.image[0]} alt="" />
                  <p>{item.name}</p>
                  <p>{item.category}</p>
                  <p>{currency}{item.price}</p>
                  <p 
                    className={`text-center font-medium ${
-                     displayStock === 0 ? 'text-red-600' : 
-                     displayStock <= 10 ? 'text-orange-600' : 
-                     'text-green-600'
+                     displayStock === 0 ? 'text-[var(--danger)]' : 
+                     displayStock <= 10 ? 'text-[var(--warning)]' : 
+                     'text-[var(--success)]'
                    }`}
                    title={stockTooltip || `Total stock: ${displayStock}`}
                  >
                    {displayStock}
                    {item.sizeVariants && item.sizeVariants.length > 0 && (
-                     <span className='text-xs block text-gray-500'>({item.sizeVariants.length} sizes)</span>
+                     <span className='text-xs block text-muted'>({item.sizeVariants.length} sizes)</span>
                    )}
                  </p>
                  <button
                    onClick={() => openEditDialog(item)}
-                   className='text-blue-600 hover:text-blue-800 text-center cursor-pointer'
+                   className='text-[var(--accent)] hover:text-[color-mix(in_srgb,var(--accent)_85%,black)] text-center cursor-pointer'
                  >
                    Edit
                  </button>
                  <p
                  onClick={()=>removeProduct(item._id)}
-                 className='text-right md:text-center cursor-pointer text-lg text-red-600 hover:text-red-800'>X</p>
+                 className='text-right md:text-center cursor-pointer text-lg text-[var(--danger)] hover:text-[color-mix(in_srgb,var(--danger)_85%,black)]'>X</p>
                </div>
       )
     }
@@ -499,13 +500,13 @@ const handleUpdateProduct = async (e) => {
 
         {/* Edit Dialog */}
         {showEditDialog && (
-          <div className='fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4'>
-            <div className='bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6'>
+          <div className='fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4'>
+            <div className='glass-card w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6'>
               <div className='flex justify-between items-center mb-4'>
                 <h2 className='text-2xl font-bold'>Edit Product</h2>
                 <button
                   onClick={closeEditDialog}
-                  className='text-gray-500 hover:text-gray-700 text-2xl font-bold'
+                  className='text-muted hover:text-[var(--text)] text-2xl font-bold'
                 >
                   ×
                 </button>
@@ -862,10 +863,9 @@ const handleUpdateProduct = async (e) => {
             </div>
           </div>
         )}
-    </>
+    </div>
   )
 }
 
 export default List;
-
 

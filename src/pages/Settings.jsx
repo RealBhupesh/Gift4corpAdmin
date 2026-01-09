@@ -6,17 +6,20 @@ const Settings = ({ token }) => {
   const [tab, setTab] = useState('categories');
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Settings</h1>
-      <div className="flex gap-4 mb-6">
+    <div className="space-y-6">
+      <div>
+        <h1 className="page-title">Settings</h1>
+        <p className="text-sm text-muted">Manage categories and college merchandise lists.</p>
+      </div>
+      <div className="glass-surface inline-flex gap-3 p-2 rounded-full">
         <button
-          className={`px-4 py-2 rounded-lg font-semibold transition border ${tab === 'categories' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border-blue-600'}`}
+          className={`btn ${tab === 'categories' ? 'btn-primary' : 'btn-secondary'}`}
           onClick={() => setTab('categories')}
         >
           Manage Categories
         </button>
         <button
-          className={`px-4 py-2 rounded-lg font-semibold transition border ${tab === 'merchandise' ? 'bg-blue-600 text-white' : 'bg-white text-blue-600 border-blue-600'}`}
+          className={`btn ${tab === 'merchandise' ? 'btn-primary' : 'btn-secondary'}`}
           onClick={() => setTab('merchandise')}
         >
           Manage Merchandise

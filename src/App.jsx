@@ -26,16 +26,15 @@ useEffect(() => {
 
 
   return (
-    <div className='bg-gray-50 min-h-screen'>
+    <div className='app-shell'>
       <ToastContainer />
       {token === "" ? <Login  setToken={setToken}/> : 
       
       <>
       <Navbar setToken={setToken}/>
-      <hr />
-      <div className='flex w-full'>
+      <div className='flex w-full gap-6 px-6 pb-10 pt-4'>
          <Sidebar />
-         <div className='w-[70%] mx-auto ml-[max(5vw,25px)] my-8 text-gray-600 text-base  '>
+         <div className='flex-1 max-w-6xl text-base text-[var(--text)]'>
             <Routes>
               <Route path='/' element={ <Dashboard token={token} /> } />
               <Route path='/add' element={ <Add token={token} /> } />

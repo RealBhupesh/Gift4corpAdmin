@@ -296,7 +296,9 @@ const OrderDetails = ({ token }) => {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg">Loading order details...</p>
+        <div className="glass-card px-6 py-5">
+          <p className="text-lg">Loading order details...</p>
+        </div>
       </div>
     )
   }
@@ -304,7 +306,9 @@ const OrderDetails = ({ token }) => {
   if (!order) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-lg">Order not found</p>
+        <div className="glass-card px-6 py-5">
+          <p className="text-lg">Order not found</p>
+        </div>
       </div>
     )
   }
@@ -312,41 +316,41 @@ const OrderDetails = ({ token }) => {
   const priceBreakdown = calculatePriceBreakdown()
 
   return (
-    <div className="max-w-5xl mx-auto p-4 sm:p-6">
+    <div className="max-w-5xl mx-auto p-4 sm:p-6 space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={() => navigate('/orders')}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+          className="btn btn-ghost flex items-center gap-2 text-sm"
         >
           <span>←</span> Back to Orders
         </button>
         <div className="flex items-center gap-4">
           <button
             onClick={downloadInvoice}
-            className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-semibold shadow-md"
+            className="btn btn-primary flex items-center gap-2"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
             </svg>
             Download Invoice
           </button>
-          <h2 className="text-2xl font-bold text-gray-800">Order Details</h2>
+          <h2 className="text-2xl font-bold">Order Details</h2>
         </div>
       </div>
 
       {/* Order Info Card */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+      <div className="glass-card p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">Order Information</h3>
+            <h3 className="section-title mb-3">Order Information</h3>
             <div className="space-y-2 text-sm">
               <p><span className="font-medium">Order ID:</span> {order._id}</p>
               <p><span className="font-medium">Date:</span> {new Date(order.date).toLocaleString()}</p>
               <p><span className="font-medium">Payment Method:</span> {order.paymentMethod}</p>
               <p>
                 <span className="font-medium">Payment Status:</span>{' '}
-                <span className={order.payment ? 'text-green-600' : 'text-orange-600'}>
+                <span className={order.payment ? 'text-[var(--success)]' : 'text-[var(--warning)]'}>
                   {order.payment ? 'Paid' : 'Pending'}
                 </span>
               </p>
@@ -355,7 +359,7 @@ const OrderDetails = ({ token }) => {
                 <select
                   onChange={statusHandler}
                   value={order.status}
-                  className="border border-gray-300 rounded px-3 py-1.5 font-semibold text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="glass-input text-sm font-semibold"
                 >
                   <option value="Order Placed">Order Placed</option>
                   <option value="Packing">Packing</option>
@@ -368,9 +372,9 @@ const OrderDetails = ({ token }) => {
           </div>
 
           <div>
-            <h3 className="text-lg font-semibold mb-3 text-gray-800">Shipping Address</h3>
-            <div className="space-y-1 text-sm">
-              <p className="font-medium text-base">
+            <h3 className="section-title mb-3">Shipping Address</h3>
+            <div className="space-y-1 text-sm text-muted">
+              <p className="font-medium text-base text-[var(--text)]">
                 {order.address.firstName} {order.address.lastName}
               </p>
               <p>{order.address.street}</p>
@@ -381,11 +385,11 @@ const OrderDetails = ({ token }) => {
                 {order.address.country} - {order.address.zipcode}
               </p>
               <p className="mt-2">
-                <span className="font-medium">Phone:</span> {order.address.phone}
+                <span className="font-medium text-[var(--text)]">Phone:</span> {order.address.phone}
               </p>
               {order.address.email && (
                 <p>
-                  <span className="font-medium">Email:</span> {order.address.email}
+                  <span className="font-medium text-[var(--text)]">Email:</span> {order.address.email}
                 </p>
               )}
             </div>
@@ -394,8 +398,8 @@ const OrderDetails = ({ token }) => {
       </div>
 
       {/* Order Items */}
-      <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">Order Items</h3>
+      <div className="glass-card p-6">
+        <h3 className="section-title mb-4">Order Items</h3>
         <div className="space-y-4">
           {order.items.map((item, index) => {
             const itemTotal = item.price * item.quantity
@@ -406,36 +410,36 @@ const OrderDetails = ({ token }) => {
             return (
               <div
                 key={index}
-                className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition"
+                className="glass-card flex items-start gap-4 p-4"
               >
                 <img
                   src={item.image?.[0] || assets.parcel_icon}
                   alt={item.name}
-                  className="w-20 h-20 object-cover rounded"
+                  className="w-20 h-20 object-cover rounded border border-[var(--glass-stroke)]"
                 />
                 <div className="flex-1">
-                  <h4 className="font-semibold text-gray-800">{item.name}</h4>
-                  <p className="text-sm text-gray-600 mt-1">
+                  <h4 className="font-semibold">{item.name}</h4>
+                  <p className="text-sm text-muted mt-1">
                     Category: {item.category} {item.subCategory && `| ${item.subCategory}`}
                   </p>
                   {item.size && item.size !== 'default' && (
-                    <p className="text-sm text-gray-600">Size: {item.size}</p>
+                    <p className="text-sm text-muted">Size: {item.size}</p>
                   )}
                   <div className="mt-2 text-sm">
-                    <p className="text-gray-700">
+                    <p className="text-[var(--text)]">
                       Price: {currency}{item.price} × {item.quantity} = {currency}{itemTotal.toFixed(2)}
                     </p>
-                    <p className="text-gray-600">
+                    <p className="text-muted">
                       GST ({gstRate === 0.05 ? '5%' : '18%'}): {currency}{gstAmount.toFixed(2)}
                     </p>
-                    <p className="font-semibold text-gray-800 mt-1">
+                    <p className="font-semibold mt-1">
                       Subtotal: {currency}{itemWithGST.toFixed(2)}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm text-gray-600">Quantity</p>
-                  <p className="text-lg font-bold text-gray-800">{item.quantity}</p>
+                  <p className="text-sm text-muted">Quantity</p>
+                  <p className="text-lg font-bold">{item.quantity}</p>
                 </div>
               </div>
             )
@@ -444,30 +448,30 @@ const OrderDetails = ({ token }) => {
       </div>
 
       {/* Price Breakdown */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h3 className="text-lg font-semibold mb-4 text-gray-800">Price Breakdown</h3>
+      <div className="glass-card p-6">
+        <h3 className="section-title mb-4">Price Breakdown</h3>
         <div className="space-y-3">
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Subtotal (Products):</span>
+            <span className="text-muted">Subtotal (Products):</span>
             <span className="font-medium">{currency}{priceBreakdown.subtotal}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Total GST:</span>
+            <span className="text-muted">Total GST:</span>
             <span className="font-medium">{currency}{priceBreakdown.totalGST}</span>
           </div>
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Shipping Fee:</span>
+            <span className="text-muted">Shipping Fee:</span>
             <span className="font-medium">{currency}{priceBreakdown.shippingFee}</span>
           </div>
-          <div className="border-t border-gray-300 pt-3 mt-3">
+          <div className="border-t border-[var(--glass-stroke)] pt-3 mt-3">
             <div className="flex justify-between">
-              <span className="text-lg font-bold text-gray-800">Total Amount:</span>
-              <span className="text-lg font-bold text-gray-800">
+              <span className="text-lg font-bold">Total Amount:</span>
+              <span className="text-lg font-bold">
                 {currency}{priceBreakdown.total}
               </span>
             </div>
           </div>
-          <div className="text-xs text-gray-500 mt-2">
+          <div className="text-xs text-muted mt-2">
             <p>* GST: 5% for Apparels, 18% for other categories</p>
           </div>
         </div>

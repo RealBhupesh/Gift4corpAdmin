@@ -8,10 +8,15 @@ const Navbar = ({setToken}) => {
   };
 
   return (
-    <div className='flex items-center justify-between'>
-        <img  className='w-[max(10%,70px)]' src={assets.logo} alt="" />
-        <button onClick={handleLogout} className='bg-gray-600 text-white px-5 py-2 sm:px-7 sm:py-2 rounded-full text-xs sm:text-sm  cursor-pointer'>Logout</button>
-
+    <div className='glass-surface flex items-center justify-between px-6 py-4 mx-6 mt-4'>
+        <div className='flex items-center gap-3'>
+          <img className='w-[max(10%,70px)]' src={assets.logo} alt="Gift4Corp" />
+          <div className='hidden sm:block'>
+            <p className='text-sm text-muted'>Admin Console</p>
+            <p className='text-lg font-semibold'>Gift4Corp</p>
+          </div>
+        </div>
+        <button onClick={handleLogout} className='btn btn-secondary text-xs sm:text-sm'>Logout</button>
     </div>
   )
 }
